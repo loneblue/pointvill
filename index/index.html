@@ -1,0 +1,132 @@
+<? 
+include "../common/common.php"; 
+
+$site = "hidisk";
+$id = "12345678901234567890";
+$now = date("Y-m-d");
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr" />
+	<title>무료충전소</title>
+<link rel="stylesheet" href="../admin/css/css-buttons.css" type="text/css" title="default" />
+<link rel="stylesheet" href="../font/nanumgothiccoding.css" type="text/css" media="screen" title="default" />
+<style type="text/css">
+/* 페이지 디자인(버튼 스타일은 css-buttons.css참고 )------------------------------------------- */					
+body	{
+font-family: 'Nanum Gothic Coding',Tahoma;
+}
+a, button, input {margin:9px;color:#222;}
+hr {
+border:0px #eaeaea solid;
+border-top-width: 1px;
+clear: both;
+height: 0;
+margin:20px 0;
+}
+code {
+padding:5px;
+background:#eaeaea;
+-moz-border-radius:5px;
+-webkit-border-radius:5px;
+border-radius:5px;
+display:block;
+-moz-box-shadow:0 1px 1px #999 inset;
+-webkit-box-shadow:0 1px 1px #999 inset;
+box-shadow:0 1px 1px #999 inset;
+}
+#wrap, #footer {
+width:960px;
+margin:20px auto;
+}
+#footer {text-align:center;}
+.highlight {background:#3399FF;padding:2px;}
+</style>
+<script src="../admin/js/jquery/jquery-1.4.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+jQuery(document).ready(function() {
+	jQuery("a").click(function() {
+		return false;
+	});
+});
+</script>
+</head>
+
+<body>
+<table width=100% cellpadding=0 cellspacing=0 border=0 align="center">
+	<tr>
+		<td style="background-color:#000000;" height=30 align="center">
+			<table width=100% cellpadding=1 cellspacing=1 border=0 align="center">
+				<tr>
+					<td style="background-color:#489CFF;color:white" height=30 align="center"><b>[ 무·료·충·전·소 ]</b>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td align="right">
+			<table width=100% cellpadding=0 cellspacing=0 border=0>
+				<tr>
+					<td style="font-size:12px" align="right">* 문의사항은 신속하고 친절하게 처리해드리겠습니다.</td>
+					<td width=100px><input type="button" class="large red button" value="문의하기" onClick="javascript:window.open('popup.html?site=<?=$site?>&id=<?=$id?>','','width=640,height=480')"></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+<?
+$tmp = "select * from tbl_add where add_member like '%|$site%' and add_stat='진행' and add_yn='y' and (add_start <= '$now' and add_end >= '$now') order by pk_id desc";
+$que = mysql_query($tmp) or die($tmp);
+$i=0;
+while($rows = mysql_fetch_array($que)) 
+{
+	if($i == 0) {
+?>
+		<td style="padding:5px">
+			<table width=100% cellpadding=0 cellspacing=0 border=0>
+				<tr>
+<? } ?>
+					<td width=50%>
+						<table width=99% cellpadding=1 cellspacing=1 border=0 bgcolor="#CCCCCC" height=140>
+							<tr>					
+								<td bgcolor="#FFFFFF" width="175px">
+									<img src="../file/<?=$rows[add_image]?>" border=0 style="cursor:pointer" onClick="javascript:window.open('about:blank').location.href='link.php?pid=<?=$rows[pk_id]?>&site=<?=$site?>&id=<?=$id?>'" width=175 height=135></td>
+								<td bgcolor="#FFFFFF" style="padding:5px;font-size:12px;line-height:180%" valign="top">
+									<b>[ <?=stripslashes($rows[add_name])?> ]</b><br>
+									<font color="#D9418C"><b>포인트 <?=number_format($rows[add_price])?> P</b></font><br>
+									<font color="#6799FF"><?=stripslashes($rows[add_gubun])?></font><br> 
+									<?=html_format($rows[add_desc])?>
+								</td>
+							</tr>
+						</table>
+					</td>
+<? 
+	$i++;
+
+	if($i>0 && $i%2==0) {
+?>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td style="padding:5px">
+			<table width=100% cellpadding=0 cellspacing=0 border=0>
+				<tr>
+
+<?
+	}
+} 
+
+if($i%2!=0) {
+?>
+					<td width=50%>&nbsp;</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+<? } ?>
+</table>
+</body>
+</html>
+<? disConnect($conn); ?>

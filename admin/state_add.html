@@ -1,0 +1,283 @@
+<? 
+include "header.html"; 
+
+$first = "01";
+$last = date(t, time());
+if($Date1 == "") $Date1 = date("Y-m")."-"."$first";
+if($Date2 == "") $Date2 = date("Y-m")."-"."$last";
+?>
+<script src="js/calendar.js"></script>
+<!-- start content-outer ........................................................................................................................START -->
+<div id="content-outer">
+<!-- start content -->
+<div id="content">
+
+	<!--  start page-heading -->
+	<div id="page-heading">
+		<h1>통계관리 > <b>광고별통계</b></h1>
+	</div>
+	<!-- end page-heading -->
+
+	<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+	<tr>
+		<th rowspan="3" class="sized"><img src="images/shared/side_shadowleft.jpg" width="20" height="300" alt="" /></th>
+		<th class="topleft"></th>
+		<td id="tbl-border-top">&nbsp;</td>
+		<th class="topright"></th>
+		<th rowspan="3" class="sized"><img src="images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+	</tr>
+<form name="frm_main">
+	<tr>
+		<td id="tbl-border-left"></td>
+		<td>
+		<!--  start content-table-inner ...................................................................... START -->
+		<div id="content-table-inner">
+		
+			<!--  start table-content  -->
+			<div id="table-content">
+
+<!--
+				<div id="message-yellow">
+				<table border="0" width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="yellow-left">You have a new message. <a href="">Go to Inbox.</a></td>
+					<td class="yellow-right"><a class="close-yellow"><img src="images/table/icon_close_yellow.gif"   alt="" /></a></td>
+				</tr>
+				</table>
+				</div>
+
+				<div id="message-red">
+				<table border="0" width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="red-left">Error. <a href="">Please try again.</a></td>
+					<td class="red-right"><a class="close-red"><img src="images/table/icon_close_red.gif"   alt="" /></a></td>
+				</tr>
+				</table>
+				</div>
+				
+				<div id="message-blue">
+				<table border="0" width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="blue-left">Welcome back. <a href="">View my account.</a> </td>
+					<td class="blue-right"><a class="close-blue"><img src="images/table/icon_close_blue.gif"   alt="" /></a></td>
+				</tr>
+				</table>
+				</div>
+			
+				<div id="message-green">
+				<table border="0" width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="green-left">Product added sucessfully. <a href="">Add new one.</a></td>
+					<td class="green-right"><a class="close-green"><img src="images/table/icon_close_green.gif"   alt="" /></a></td>
+				</tr>
+				</table>
+				</div>
+-->		
+
+				<div>
+					<table border="0" width="100%" cellpadding="0" cellspacing="0">
+						<tr>
+							<td width=200px>
+								<table width=100% cellpadding=0 cellspacing=0 border=0>
+									<tr>
+										<td><input type="text" name="Date1" style="width:70px" class="inputType" value="<?=$Date1?>"></td>
+										<td><a href="javascript:showCal('Calendar1')"><img src="images/forms/icon_calendar.jpg"></a></td>
+										<td style="padding-left:5px"><input type="text" name="Date2" style="width:70px" class="inputType" value="<?=$Date2?>"></td>
+										<td><a href="javascript:showCal('Calendar2')"><img src="images/forms/icon_calendar.jpg"></a></td>
+									</tr>
+								</table>
+							</td>
+							<td style="padding-left:5px">
+								<select name="where" class="selectType" onChange="javascript:document.frm_main.submit()">
+                  <option value="">==광고명==</option>			             
+<?
+$tmp_mem = "select * from tbl_add where add_yn='Y' order by pk_id asc";
+$que_mem = mysql_query($tmp_mem) or die($tmp_mem);
+while($row_mem = mysql_fetch_array($que_mem))
+{
+?>
+                  <option value="<?=$row_mem[pk_id]?>" <? if($where==$row_mem[pk_id]) echo "selected style='color:red'"; ?>><?=stripslashes($row_mem[add_name])?></option>			             
+<?
+}
+?>
+								</select>
+<a class="large blue button" href="#" onClick="javascript:document.frm_main.submit()">
+  	<span>검색하기</span>
+</a>						
+							</td>
+						</tr>
+					</table>
+				</div><br />
+
+				<!--  start product-table ..................................................................................... -->
+				<table border="0" width="100%" cellpadding="0" cellspacing="0" id="product-table">
+				<tr>
+					<th class="table-header-repeat line-left"><a href="#">날짜</th>
+					<th class="table-header-repeat line-left"><a href="?sort=add_name&order=<?=$order2?>">매체사 <span style="font-size:8px"><?=$order3?></a></th>
+					<th class="table-header-repeat line-left"><a href="?sort=add_price&order=<?=$order2?>">건수 <span style="font-size:8px"><?=$order3?></a></th>
+					<th class="table-header-repeat line-left"><a href="?sort=add_start&order=<?=$order2?>">매출액 <span style="font-size:8px"><?=$order3?></a></th>
+					<th class="table-header-repeat line-left"><a href="?sort=add_end&order=<?=$order2?>">정산액 <span style="font-size:8px"><?=$order3?></a></th>
+					<th class="table-header-repeat line-left"><a href="#">수입액</th>
+					<th class="table-header-repeat line-left"><a href="#">건별보기</a></th>
+				</tr>
+<?
+if($where) 
+{
+	$add_sql = " and point_add_id='$where' ";
+	$tmp_mem = "select * from tbl_add where pk_id='$where'";
+	$que_mem = mysql_query($tmp_mem) or die($tmp_mem);
+	if($que_mem) $row_mem = mysql_fetch_array($que_mem); else $row_mem = NULL;
+}
+
+$tmp = "select substring(point_date,1,10) as pdate from tbl_point where point_result='Y' $add_sql and (substring(point_date,1,10) >= '$Date1' and point_date <= '$Date2') group by substring(point_date,1,10) order by point_date desc";
+$que = mysql_query($tmp) or die($tmp);
+$i=0; $tot_count=0; $tot_cost=0; $tot_price=0; $tot_profit=0;
+while($rows = mysql_fetch_array($que))
+{
+	$i++;
+	if($i%2 != 0) $tr_class="alternate-row"; else $tr_class="";
+
+	$count=0; $cost=0; $price=0; $profit=0;
+	$tmp1 = "select * from tbl_point where point_result='Y' and substring(point_date,1,10)='$rows[pdate]' $add_sql";
+	$que1 = mysql_query($tmp1) or die($tmp1);
+	while($row1 = mysql_fetch_array($que1))
+	{
+		$count++;
+		
+		$tmp2 = "select * from tbl_add where pk_id='$row1[point_add_id]'";
+		$que2 = mysql_query($tmp2) or die($tmp2);
+		if($que2) $row2 = mysql_fetch_array($que2); else $row2 = NULL;
+
+		$cost += $row2[add_cost];
+		$price += $row2[add_price];
+		$profit += ($row2[add_price]-$row2[add_cost]);
+	}
+
+	$tot_count += $count;
+	$tot_cost += $cost;
+	$tot_price += $price;
+	$tot_profit += $profit;
+?>
+				<tr class="<?=$tr_class?>">
+					<td><?=$strike?><?=stripslashes($rows[pdate])?></td>
+<? if($where) { ?>
+					<td><?=$strike?><?=$row_mem[add_name]?></td>
+<? } else { ?>
+					<td><?=$strike?>전체</td>
+<? } ?>
+					<td><?=$strike?><?=number_format($count)?></td>
+					<td style="color:teal"><?=$strike?><?=number_format($price)?></td>
+					<td style="color:blue"><?=$strike?><?=number_format($cost)?></td>
+					<td style="color:brown"><?=$strike?><?=number_format($profit)?></td>
+					<td>
+						<a href="state_cnt.html?where3=<?=$where?>&Date1=<?=$Date1?>&Date2=<?=$Date2?>" title="리포트" class="icon-3 info-tooltip"></a>
+					</td>
+				</tr>
+<?
+}
+?>
+				<tr>
+					<th class="table-header-repeat line-left" colspan=2><a href="#">합계</th>
+					<th class="table-header-repeat line-left"><a href="#"><?=number_format($tot_count)?></th>
+					<th class="table-header-repeat line-left"><a href="#"><?=number_format($tot_price)?></th>
+					<th class="table-header-repeat line-left"><a href="#"><?=number_format($tot_cost)?></th>
+					<th class="table-header-repeat line-left"><a href="#"><?=number_format($tot_profit)?></th>
+					<th class="table-header-repeat line-left"></th>
+				</tr>
+				</tr>
+				</table>
+				<!--  end product-table................................... --> 
+			</div>
+			<!--  end content-table  -->
+			
+			<!--  start paging.....................................................
+			<table border="0" cellpadding="0" cellspacing="0" id="paging-table">
+			<tr>
+			<td>
+<?php				
+$prev_img = "<img src='images/table/paging_left.gif' border=0 align='absmiddle'>";
+$next_img = "<img src='images/table/paging_right.gif' border=0 align='absmiddle'>";
+		
+//==============================
+// 페이지 정보가 표시되는 곳입니다.
+//------------------------------
+if($row_count>=0)
+{
+	// ----------------------
+  if($start_page>1)
+ 	{
+  	echo "&nbsp;<a href=?uid=$uid&np=".($start_page-1)."&sp=".($start_page-$div_page).$add_url.">$prev_img</a>";  						
+	}
+	else
+	{
+		echo "&nbsp;$prev_img";
+	}	//	이전 페이지 등록정보 끝
+  //---------------------------
+
+	if($last_page==0)
+	{
+		echo "&nbsp;<span style='color:red;font-size:14px;'>1</span></b>";
+	}
+	else
+	{
+		for($i=$start_page;$i<=$last_page;$i++)
+		{
+			if($now_page==$i)
+			{
+				echo "&nbsp;&nbsp;<span style='color:red;font-size:14px;'>".$i."</span></b>";
+			}
+			else
+			{
+				echo "&nbsp;&nbsp;<a href=?uid=$uid&np=".$i."&sp=".$start_page.$add_url." style='color:black;font-size:14px;'>".$i."</a>";
+			}	//	end of if
+		}	//	end of for
+	}
+
+	//---------------------------
+	if($total_page>$last_page)
+	{
+		echo "&nbsp;&nbsp;<a href=?uid=$uid&np=".($last_page+1)."&sp=".($last_page+1).$add_url.">$next_img</a>";
+	}
+	else
+	{
+		echo "&nbsp;&nbsp;$next_img";
+	}	//	다음 페이지 등록정보 끝
+	// ----------------------
+}	// end of if
+//==============================
+?>
+			</td>
+			<td style="padding-left:10px">
+				<select name="div_list" onChange="javascript:document.frm_main.submit()">
+					<option value="10" <? if($div_list == "10") echo "selected"; ?>>10줄 표시</option>
+					<option value="20" <? if($div_list == "20") echo "selected"; ?>>20줄 표시</option>
+					<option value="50" <? if($div_list == "50") echo "selected"; ?>>50줄 표시</option>
+					<option value="100" <? if($div_list == "100") echo "selected"; ?>>100줄 표시</option>
+				</select>
+			</td>
+			</tr>
+			</table>
+			<!--  end paging................ -->
+			
+			<div class="clear"></div>
+		 
+		</div>
+		<!--  end content-table-inner ............................................END  -->
+		</td>
+		<td id="tbl-border-right"></td>
+	</tr>
+	<tr>
+		<th class="sized bottomleft"></th>
+		<td id="tbl-border-bottom">&nbsp;</td>
+		<th class="sized bottomright"></th>
+	</tr>
+</form>
+	</table>
+	<div class="clear">&nbsp;</div>
+
+</div>
+<!--  end content -->
+<div class="clear">&nbsp;</div>
+</div>
+<!--  end content-outer........................................................END -->
+<? include "footer.html"; ?>

@@ -1,0 +1,298 @@
+<? 
+include "header.html"; 
+
+if($np)	$add_url.= "&np=$np";
+if($sp)	$add_url.= "&sp=$sp";
+if($where)	$add_url.= "&where=$where";
+if($where1)	$add_url.= "&where1=$where1";
+if($where2)	$add_url.= "&where2=$where2";
+if($where3)	$add_url.= "&where3=$where3";
+if($keyword)	$add_url.= "&keyword=$keyword";
+if($sort)	$add_url.= "&sort=$sort";
+if($order)	$add_url.= "&order=$order";
+if($div_list)	$add_url.= "&div_list=$div_list";
+
+$tmp = "select * from tbl_add where pk_id='$uid'";
+$que = mysql_query($tmp) or die($tmp);
+if($que) $rows = mysql_fetch_array($que);
+?>
+<script>
+<!--
+function check_all()
+{
+	f=document.frm_member;
+	len = document.frm_member['chk_users[]'].length;
+	if (document.frm_member['chk_users[]'][0].checked==true){
+		for (var i=1; i < len; i++){
+			document.frm_member['chk_users[]'][i].checked=true;
+		}
+	}else{
+		for (var i=1; i <len; i++){
+			document.frm_member['chk_users[]'][i].checked=false;
+		}
+	}
+}	//	end of function check_all()
+
+function check_value_member(fm)
+{
+	if(fm.add_name.value.replace(/ /g, "") =="")
+	{	
+		alert("광고제목을 입력하셔야 합니다.");	
+		fm.add_name.focus();	
+		return false;	
+	}
+	fm.submit();
+}	
+//-->
+</script>
+<script language="JavaScript">
+<!--
+var imgObj = new Image();
+function showImgWin(imgName) {
+  imgObj.src = imgName;
+  setTimeout("createImgWin(imgObj)", 100);
+}
+function createImgWin(imgObj) {
+  if (! imgObj.complete) {
+    setTimeout("createImgWin(imgObj)", 100);
+    return;
+  }
+  imageWin = window.open("", "imageWin",
+    "width=" + imgObj.width + ",height=" + imgObj.height);
+  imageWin.document.write("<html><body style='margin:0'>");
+  imageWin.document.write("<a href=javascript:window.close()><img src='" + imgObj.src + "' border=0></a>");
+  imageWin.document.write("</body><html>");
+  imageWin.document.title = imgObj.src;
+}
+//-->
+</script>
+<!-- start content-outer -->
+<div id="content-outer">
+<!-- start content -->
+<div id="content">
+
+
+<div id="page-heading"><h1>광고관리 > <b>광고수정</b></h1></div>
+
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+<tr>
+	<th rowspan="3" class="sized"><img src="images/shared/side_shadowleft.jpg" width="20" height="300" alt="" /></th>
+	<th class="topleft"></th>
+	<td id="tbl-border-top">&nbsp;</td>
+	<th class="topright"></th>
+	<th rowspan="3" class="sized"><img src="images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+</tr>
+<tr>
+	<td id="tbl-border-left"></td>
+	<td>
+	<!--  start content-table-inner -->
+	<div id="content-table-inner">
+
+	<table border="0" width="100%" cellpadding="0" cellspacing="0">
+<form name="frm_member" method="post" action="add_edit.php" encType="multipart/form-data">
+<input type="hidden" name="uid" value="<?=$uid?>">
+<input type="hidden" name="np" value="<?=$np?>">
+<input type="hidden" name="sp" value="<?=$sp?>">
+<input type="hidden" name="where" value="<?=$where?>">
+<input type="hidden" name="where1" value="<?=$where1?>">
+<input type="hidden" name="where2" value="<?=$where2?>">
+<input type="hidden" name="where3" value="<?=$where3?>">
+<input type="hidden" name="keyword" value="<?=$keyword?>">
+<input type="hidden" name="sort" value="<?=$sort?>">
+<input type="hidden" name="order" value="<?=$order?>">
+<input type="hidden" name="div_list" value="<?=$div_list?>">
+	<tr valign="top">
+	<td>
+	
+	
+		<!--  start step-holder -->
+		<div id="step-holder">
+			<div class="step-no">1</div>
+			<div class="step-dark-left"><a href="">내용입력</a></div>
+			<div class="step-dark-right">&nbsp;</div>
+			<div class="step-no-off">2</div>
+			<div class="step-light-left">입력완료</div>
+			<div class="step-light-round">&nbsp;</div>
+			<div class="clear"></div>
+		</div>
+		<!--  end step-holder -->
+	
+		<!-- start id-form -->
+		<table border="0" cellpadding="0" cellspacing="0"  id="id-form">
+		<tr>
+			<th valign="top">광고사</th>
+			<td>
+		<select name="add_id" class="styledselect_form_1">
+<?
+$tmp_mem = "select * from tbl_member where member_group='9' and member_stat='Y' order by pk_id asc";
+$que_mem = mysql_query($tmp_mem) or die($tmp_mem);
+while($row_mem = mysql_fetch_array($que_mem))
+{
+?>
+			<option value="<?=$row_mem[member_id]?>" <? if($rows[add_id]==$row_mem[member_id]) echo "selected"; ?>><?=stripslashes($row_mem[member_name])?></option>
+<?
+}
+?>
+		</select>
+			</td>
+		</tr>
+		<tr>
+			<th valign="top">광고형태</th>
+			<td>
+		<select name="add_type" class="styledselect_form_1">
+					<option value="web" <? if($rows[add_type]=="web") echo "selected"; ?>>web</option>
+					<option value="mobile" <? if($rows[add_id]=="mobile") echo "selected"; ?>>mobile</option>
+		</select>
+			</td>
+		</tr>
+		<tr>
+			<th valign="top">광고제목</th>
+			<td><input type="text" class="inp-form-error" name="add_name" value="<?=stripslashes($rows[add_name])?>" /></td>
+			<td>
+			<div class="error-left"></div>
+			<div class="error-inner">필수입력</div>
+			</td>
+		</tr>
+		<tr>
+			<th valign="top">광고진행</th>
+			<td>
+		<select name="add_stat" class="styledselect_form_1">
+					<option value="준비" <? if($rows[add_stat]=="준비") echo "selected"; ?>>준비</option>
+					<option value="진행" <? if($rows[add_stat]=="진행") echo "selected"; ?>>진행</option>
+					<option value="종료" <? if($rows[add_stat]=="종료") echo "selected"; ?>>종료</option>
+		</select>
+			</td>
+		</tr>
+		<tr>
+			<th valign="top">광고매체</th>
+			<td>
+				<input type="checkbox" name="chk_users[]" onclick="javascript:check_all()"><b>전체</b><br><br>
+				<table width=100% cellpadding=0 cellspacing=0 padding=0>
+					<tr>
+<?
+$tmp_mem = "select * from tbl_member where member_group='10' order by pk_id asc";
+$que_mem = mysql_query($tmp_mem) or die($tmp_mem);
+$i=0;
+while($row_mem = mysql_fetch_array($que_mem))
+{
+?>
+						<td width=25%><input type="checkbox" name="chk_users[]" value="<?=$row_mem[member_id]?>" <? if(preg_match("/$row_mem[member_id]/",$rows[add_member])) echo "checked"; ?> /> <?=stripslashes($row_mem[member_id])?></td>
+<?
+	$i++;
+	if($i%4==0) echo "</tr></tr>";
+}
+
+if($i%4 != 0) echo "</tr>";
+?>
+
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<th valign="top">광고단가</th>
+			<td><input type="text" class="inp-form_1" name="add_cost" style="width:80px" value="<?=stripslashes($rows[add_cost])?>" /> 원</td>
+			<td></td>
+		</tr>
+		<tr>
+			<th valign="top">매체단가</th>
+			<td><input type="text" class="inp-form_1" name="add_price" style="width:80px" value="<?=stripslashes($rows[add_price])?>" /> 원</td>
+			<td></td>
+		</tr>
+		<tr>
+			<th valign="top">광고URL</th>
+			<td><input type="text" class="inp-form_1" style="width:400px" name="add_add_url" value="<?=stripslashes($rows[add_url])?>" /></td>
+			<td></td>
+		</tr>
+	<tr>
+	<th>광고이미지</th>
+	<td><input type="file" name="file" class="fileType" />
+<? if($rows[add_image]) { ?>
+	<br><br><a href="javascript:showImgWin('../file/<?=$rows[add_image]?>')">[이미지보기]</a>
+	&nbsp;<input type="checkbox" name="file_del" value="Y">삭제</a>
+<? } ?>
+	</td>
+	<td>
+	<div class="bubble-left"></div>
+	<div class="bubble-inner">* 20MB 이하 용량 / 가로175px 세로135px</div>
+	<div class="bubble-right"></div>
+	</td>
+	</tr>
+		<tr>
+			<th valign="top">광고형태</th>
+			<td><input type="text" class="inp-form_1" name="add_gubun" style="width:80px" value="<?=stripslashes($rows[add_gubun])?>" /></td>
+			<td></td>
+		</tr>
+	<tr>
+		<th valign="top">광고설명</th>
+		<td><textarea rows="10" cols="56" class="textareaType" name="add_desc" style="line-height:150%"><?=stripslashes($rows[add_desc])?></textarea></td>
+		<td></td>
+	</tr>
+		<tr>
+			<th valign="top">광고기간</th>
+			<td><input type="text" class="inp-form_1" name="add_start" style="width:80px" value="<?=stripslashes($rows[add_start])?>" /> ~ <input type="text" class="inp-form_1" name="add_end" style="width:80px" value="<?=stripslashes($rows[add_end])?>" /></td>
+			<td></td>
+		</tr>
+	<tr>
+		<th>&nbsp;</th>
+		<td valign="top">
+<a class="large red button" href="#" onClick="javascript:check_value_member(frm_member)">
+  	<span>수정하기</span>
+</a>&nbsp;
+<a class="large blue button" href="add_list.html?mode=list<?=$add_url?>">
+  	<span>목록으로</span>
+</a>
+		</td>
+		<td></td>
+	</tr>
+</form>
+	</table>
+	<!-- end id-form  -->
+
+	</td>
+	<td>
+</td>
+</tr>
+<tr>
+<td><img src="images/shared/blank.gif" width="695" height="1" alt="blank" /></td>
+<td></td>
+</tr>
+</table>
+ 
+<div class="clear"></div>
+ 
+
+</div>
+<!--  end content-table-inner  -->
+</td>
+<td id="tbl-border-right"></td>
+</tr>
+<tr>
+	<th class="sized bottomleft"></th>
+	<td id="tbl-border-bottom">&nbsp;</td>
+	<th class="sized bottomright"></th>
+</tr>
+</table>
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class="clear">&nbsp;</div>
+
+</div>
+<!--  end content -->
+<div class="clear">&nbsp;</div>
+</div>
+<!--  end content-outer -->
+<? include "footer.html"; ?>

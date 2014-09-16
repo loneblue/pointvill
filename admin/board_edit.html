@@ -1,0 +1,219 @@
+<? 
+include "header.html"; 
+
+if($np)	$add_url.= "&np=$np";
+if($sp)	$add_url.= "&sp=$sp";
+if($where)	$add_url.= "&where=$where";
+if($where1)	$add_url.= "&where1=$where1";
+if($where2)	$add_url.= "&where2=$where2";
+if($where3)	$add_url.= "&where3=$where3";
+if($keyword)	$add_url.= "&keyword=$keyword";
+if($sort)	$add_url.= "&sort=$sort";
+if($order)	$add_url.= "&order=$order";
+if($div_list)	$add_url.= "&div_list=$div_list";
+
+$tmp = "select * from tbl_boards where pk_id='$pid'";
+$que = mysql_query($tmp) or die($tmp);
+if($que) $rows = mysql_fetch_array($que);
+
+$tmp_add = "select * from tbl_add where pk_id='$rows[bpid]'";
+$que_add = mysql_query($tmp_add) or die($tmp_add);
+if($que_add) $row_add = mysql_fetch_array($que_add); else $row_add = NULL;
+
+$tmp_pnt = "select * from tbl_point where point_link_id='$rows[category]' and point_add_id='$rows[bpid]' and point_osp_id='$rows[opt]' order by pk_id desc limit 1";
+$que_pnt = mysql_query($tmp_pnt) or die($tmp_pnt);
+$tot_pnt = mysql_num_rows($que_pnt);
+if($tot_pnt > 0)
+{
+	$row_pnt = mysql_fetch_array($que_pnt);
+	if($row_pnt[point_result] == "Y") $result = "<font color=blue>완료</font>"; else $result = "<font color=red>대기</font>";
+} else {
+	$result = "<font color=teal>없음</font>";
+}
+?>
+<script>
+<!--
+function check_value_member(fm)
+{
+	if(fm.add_reply.value.replace(/ /g, "") =="")
+	{	
+		alert("답변내용을 입력하셔야 합니다.");	
+		fm.add_reply.focus();	
+		return false;	
+	}
+	fm.submit();
+}	
+//-->
+</script>
+<script>
+<!--
+function open_check(pid,mid) {
+	window.open("state_check.php?pid="+pid+"&mid="+mid,"","width=320,height=240");
+}
+function open_point(pid,mid) {
+	if(confirm("해당건을 포인트 주기 하시겠습니까?")) {
+		window.open("state_point.php?pid="+pid+"&mid="+mid,"","width=320,height=240");
+	}
+}
+//-->
+</script>
+<!-- start content-outer -->
+<div id="content-outer">
+<!-- start content -->
+<div id="content">
+
+
+<div id="page-heading"><h1>문의관리 > <b>문의처리</b></h1></div>
+
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+<tr>
+	<th rowspan="3" class="sized"><img src="images/shared/side_shadowleft.jpg" width="20" height="300" alt="" /></th>
+	<th class="topleft"></th>
+	<td id="tbl-border-top">&nbsp;</td>
+	<th class="topright"></th>
+	<th rowspan="3" class="sized"><img src="images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+</tr>
+<tr>
+	<td id="tbl-border-left"></td>
+	<td>
+	<!--  start content-table-inner -->
+	<div id="content-table-inner">
+
+	<table border="0" width="100%" cellpadding="0" cellspacing="0">
+<form name="frm_member" method="post" action="board_edit.php" encType="multipart/form-data">
+<input type="hidden" name="pid" value="<?=$pid?>">
+<input type="hidden" name="np" value="<?=$np?>">
+<input type="hidden" name="sp" value="<?=$sp?>">
+<input type="hidden" name="where" value="<?=$where?>">
+<input type="hidden" name="where1" value="<?=$where1?>">
+<input type="hidden" name="where2" value="<?=$where2?>">
+<input type="hidden" name="where3" value="<?=$where3?>">
+<input type="hidden" name="keyword" value="<?=$keyword?>">
+<input type="hidden" name="sort" value="<?=$sort?>">
+<input type="hidden" name="order" value="<?=$order?>">
+<input type="hidden" name="div_list" value="<?=$div_list?>">
+	<tr valign="top">
+	<td>
+	
+	
+		<!--  start step-holder -->
+		<div id="step-holder">
+			<div class="step-no">1</div>
+			<div class="step-dark-left"><a href="">내용입력</a></div>
+			<div class="step-dark-right">&nbsp;</div>
+			<div class="step-no-off">2</div>
+			<div class="step-light-left">입력완료</div>
+			<div class="step-light-round">&nbsp;</div>
+			<div class="clear"></div>
+		</div>
+		<!--  end step-holder -->
+	
+		<!-- start id-form -->
+		<table border="0" cellpadding="0" cellspacing="0"  id="id-form" width=100%>
+		<tr>
+			<th valign="top">광고사</th>
+			<td><?=$rows[category]?></td>
+		</tr>
+		<tr>
+			<th valign="top">매체사</th>
+			<td><?=$rows[opt]?></td>
+		</tr>
+		<tr>
+			<th valign="top">광고명 / 포인트</th>
+			<td><?=stripslashes($row_add[add_name])?> / <font color=red>1,000</font></td>
+		</tr>
+		<tr>
+			<th valign="top">아이디/회원명</th>
+			<td><?=$rows[user_id]?> / <?=stripslashes($rows[name])?></td>
+		</tr>
+	<tr>
+		<th valign="top">문의내용</th>
+		<td><textarea rows="10" cols="60" class="textareaType" name="add_desc" style="line-height:1.5" readonly><?=stripslashes($rows[content])?></textarea></td>
+		<td></td>
+	</tr>
+	<tr>
+		<th valign="top">답변내용</th>
+		<td><textarea rows="10" cols="60" class="textareaType" name="add_reply" style="line-height:1.5"><?=stripslashes($rows[sub_content])?></textarea></td>
+		<td></td>
+	</tr>
+		<tr>
+			<th valign="top">광고사 확인</th>
+			<td><?=$result?></td>
+		</tr>
+		<tr>
+			<th valign="top">매체사 확인</th>
+			<td><input type="button" class="medium green button" value="확인하기" onClick="javascript:open_check('<?=$row_pnt[pk_id]?>','<?=$rows[opt]?>')"></td>
+			<td></td>
+		</tr>
+		<tr>
+			<th valign="top">포인트 주기</th>
+			<td><input type="button" class="medium orange button" value=" 포인트 " onClick="javascript:open_point('<?=$row_pnt[pk_id]?>','<?=$rows[opt]?>')"></td>
+			<td></td>
+		</tr>
+	<tr>
+		<td height=20 colspan=3></td>
+	</tr>
+	<tr>
+		<th>&nbsp;</th>
+		<td valign="top">
+<a class="large red button" href="#" onClick="javascript:check_value_member(frm_member)">
+  	<span>처리하기</span>
+</a>&nbsp;
+<a class="large blue button" href="board_list.html?mode=list<?=$add_url?>">
+  	<span>목록으로</span>
+</a>
+		</td>
+		<td></td>
+	</tr>
+</form>
+	</table>
+	<!-- end id-form  -->
+
+	</td>
+	<td>
+</td>
+</tr>
+<tr>
+<td><img src="images/shared/blank.gif" width="695" height="1" alt="blank" /></td>
+<td></td>
+</tr>
+</table>
+ 
+<div class="clear"></div>
+ 
+
+</div>
+<!--  end content-table-inner  -->
+</td>
+<td id="tbl-border-right"></td>
+</tr>
+<tr>
+	<th class="sized bottomleft"></th>
+	<td id="tbl-border-bottom">&nbsp;</td>
+	<th class="sized bottomright"></th>
+</tr>
+</table>
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class="clear">&nbsp;</div>
+
+</div>
+<!--  end content -->
+<div class="clear">&nbsp;</div>
+</div>
+<!--  end content-outer -->
+<? include "footer.html"; ?>

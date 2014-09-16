@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>test</title>
+</head>
+<body>
+<script>
+function rsIFrameCash(id, other_domain) {
+	 var iframe = document.getElementById(id);
+	 if(window.addEventListener) {
+		  window.addEventListener('message', function(event) {
+			   if(event.origin !== other_domain) return;
+			   if(isNaN(event.data)) return;
+			   var height = parseInt(event.data) + 32;
+			   iframe.height = height + "px";
+			  }, false);
+			 } else {
+				  window.attachEvent('onmessage', function(event) {
+					   if(event.origin !== other_domain) return;
+					   if(isNaN(event.data)) return;
+					   var height = parseInt(event.data) + 32;
+					   iframe.height = height + "px";
+					  });
+					 }
+					}
+</script>
+<iframe src="http://pointvill.co.kr/index/?site=hidisk&id=test" name="pointvill" id="pointvill" frameborder="0" scrolling="no" width="800" height="3000" marginwidth="0" marginheight="0" o-nload="rsIFrameCash('pointvill', 'http://pointvill.co.kr');"></iframe>
+ 
+
+</body>
+</html>

@@ -1,0 +1,146 @@
+<? 
+include "../common/common.php"; 
+
+$now = date("Y-m-d");
+
+if($site && $id) {
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr" />
+	<title>문의작성</title>
+<link rel="stylesheet" href="../admin/css/css-buttons.css" type="text/css" title="default" />
+
+<style type="text/css">
+/* 페이지 디자인(버튼 스타일은 css-buttons.css참고 )------------------------------------------- */					
+body {
+font:13px/1.5 Arial, Helvetica, Helvetica Neue, Verdana, sans-serif;
+color:#222;
+}
+a, button, input {margin:9px;color:#222;}
+hr {
+border:0px #eaeaea solid;
+border-top-width: 1px;
+clear: both;
+height: 0;
+margin:20px 0;
+}
+code {
+padding:5px;
+background:#eaeaea;
+-moz-border-radius:5px;
+-webkit-border-radius:5px;
+border-radius:5px;
+display:block;
+-moz-box-shadow:0 1px 1px #999 inset;
+-webkit-box-shadow:0 1px 1px #999 inset;
+box-shadow:0 1px 1px #999 inset;
+}
+#wrap, #footer {
+width:960px;
+margin:20px auto;
+}
+#footer {text-align:center;}
+.highlight {background:#3399FF;padding:2px;}
+</style>
+<script src="../admin/js/jquery/jquery-1.4.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+jQuery(document).ready(function() {
+	jQuery("a").click(function() {
+		return false;
+	});
+});
+</script>
+<script>
+function check_value(fm)
+{
+	if(fm.add_id.value.replace(/ /g, "") =="")
+	{	
+		alert("문의하실 광고를 선택하셔야 합니다.");	
+		fm.add_id.focus();	
+		return false;	
+	}
+	if(fm.member_name.value.replace(/ /g, "") =="")
+	{	
+		alert("회원명을 입력하셔야 합니다.");	
+		fm.member_name.focus();	
+		return false;	
+	}
+	if(fm.member_email.value.replace(/ /g, "") =="")
+	{	
+		alert("이메일을 입력하셔야 합니다.");	
+		fm.member_email.focus();	
+		return false;	
+	}
+	if(fm.member_tel.value.replace(/ /g, "") =="")
+	{	
+		alert("연락처를 입력하셔야 합니다.");	
+		fm.member_tel.focus();	
+		return false;	
+	}
+	if(fm.content.value.replace(/ /g, "") =="")
+	{	
+		alert("문의내용을 입력하셔야 합니다.");	
+		fm.content.focus();	
+		return false;	
+	}
+	fm.submit();
+}	
+</script>
+</head>
+<body bgcolor="#555555">
+<table width=100% cellpadding=1 cellspacing=1 border=0>
+<form name="frm_member" method="post" action="popup.php" encType="multipart/form-data">
+<input type="hidden" name="site" value="<?=$site?>">
+<input type="hidden" name="id" value="<?=$id?>">
+	<tr>
+		<td width=20% bgcolor="#AFAFAF" style="color:#FFFFFF;padding-left:10px">광고명</td>
+		<td bgcolor="#EFEFEF" style="padding:10px">
+			<select name="add_id">
+				<option value="">==광고선택==</option>
+<?
+$tmp = "select * from tbl_add where add_member like '%|$site%' and add_stat='진행' and add_yn='y' and (add_start <= '$now' and add_end >= '$now') order by pk_id desc";
+$que = mysql_query($tmp) or die($tmp);
+while($rows = mysql_fetch_array($que))
+{
+?>
+				<option value="<?=$rows[pk_id]?>"><?=stripslashes($rows[add_name])?></option>
+<?
+}
+?>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td bgcolor="#AFAFAF" style="color:#FFFFFF;padding-left:10px">아이디</td>
+		<td bgcolor="#EFEFEF"><input type="text" name="member_id" value="<?=$id?>" readonly></td>
+	</tr>
+	<tr>
+		<td bgcolor="#AFAFAF" style="color:#FFFFFF;padding-left:10px">회원명</td>
+		<td bgcolor="#EFEFEF"><input type="text" name="member_name"></td>
+	</tr>
+	<tr>
+		<td bgcolor="#AFAFAF" style="color:#FFFFFF;padding-left:10px">이메일</td>
+		<td bgcolor="#EFEFEF"><input type="text" name="member_email"></td>
+	</tr>
+	<tr>
+		<td bgcolor="#AFAFAF" style="color:#FFFFFF;padding-left:10px">연락처</td>
+		<td bgcolor="#EFEFEF"><input type="text" name="member_tel"></td>
+	</tr>
+	<tr>
+		<td bgcolor="#AFAFAF" style="color:#FFFFFF;padding-left:10px">문의내용</td>
+		<td bgcolor="#EFEFEF" style="padding:10px"><textarea name="content" style="width:98%;height:150px"></textarea></td>
+	</tr>
+	<tr>
+		<td bgcolor="#CFCFCF" align="center" colspan=2>
+			<input type="button" class="large red button" value="작성하기" onClick="javascript:check_value(frm_member)">
+			<input type="button" class="large blue button" value="&nbsp;창닫기&nbsp;" onClick="javascript:window.close()">
+		</td>
+	</tr>
+</form>
+</table>
+</body>
+</html>
+<? } ?>
+<? disConnect($conn); ?>

@@ -1,0 +1,397 @@
+<? 
+include "header.html"; 
+
+$table = "tbl_boards";
+$now_page =  $np;
+$start_page =  $sp;
+if(!$now_page) $now_page=1;		//	현재페이지 없으면 무조건 1페이지
+if(!$start_page) $start_page=1;		//	시작페이지 번호가 주어져 있지 않으면 1번입니다.
+if(!$div_list) $div_list = 20;	 		//	한페이지당 게시될 글 목록수
+$div_page = 10;	//	한페이지당 게시될 페이지수
+$add_url2.="&np=$now_page";
+$add_url2.="&sp=$start_page";
+$list_title = "사용자 : ";
+// ---------------------------------
+
+// =================================
+// 검색부분 
+// ---------------------------------
+if($where && $keyword)
+{
+  $keyword = trim($keyword);  
+	$add_sql.=" and $where like '%$keyword%' ";
+	$add_url.="&where=$where&keyword=$keyword";
+	$a_s_where[$where] = "selected";
+	$list_title = "'<font color=teal>$keyword</font>' 검색 : ";
+}
+if($where1)
+{
+	$add_sql.=" and category='$where1' ";
+	$add_url.="&where1=$where1";
+	$a_s_where1[$where1] = "selected";
+	$list_title1 = "'<font color=teal>$where1</font>' 검색 : ";
+}
+if($where2)
+{
+	$add_sql.=" and opt='$where2' ";
+	$add_url.="&where2=$where2";
+	$a_s_where2[$where2] = "selected";
+	$list_title2 = "'<font color=teal>$where2</font>' 검색 : ";
+}
+if($where3)
+{
+	$add_sql.=" and bpid='$where3' ";
+	$add_url.="&where3=$where3";
+	$a_s_where3[$where3] = "selected";
+	$list_title3 = "'<font color=teal>$where3</font>' 검색 : ";
+}
+if(!$sort) $sort = "pk_id";
+if($order == "asc") 
+{
+	$order = "asc"; $order2 = "desc"; $order3 = "▲";
+} else {
+	$order = "desc"; $order2 = "asc"; $order3 = "▼";
+}
+
+$add_url.="&sort=$sort&order=$order&div_list=$div_list";
+$add_url.="&Date1=$Date1&Date2=$Date2";
+
+$common_sql = " from $table where 1 $add_sql ";
+// ---------------------------------
+
+// =================================
+// 총페이지수를 구하는 곳입니다.
+// ---------------------------------
+$sql = "select count(*) $common_sql ";
+$total_count=0;
+$total_count = getOneDataSQL2($sql, $conn);
+$total_page=Ceil(doubleval($total_count/$div_list));
+$last_page=($start_page+$div_page-1);
+if($last_page>$total_page)	$last_page=$total_page;
+$list_count=$total_count-(($now_page-1)*$div_list);
+// ---------------------------------
+
+// =================================
+// Select Data
+// ---------------------------------
+$sql = "select * $common_sql order by $sort $order";
+$result = RunSQLReturnLimitResult2($sql, $div_list, $now_page, $conn);
+$row_count = mysql_num_rows($result);
+// =================================
+?>
+<script>
+function confirm_del(uid,stat)
+{
+	if(stat == "Y")
+	{
+		if(confirm("해당 매체를 삭제하겠습니까?"))
+		{
+			location.href="member_del.php?uid="+uid+"<?=$add_url?><?=$add_url2?>";
+		} 
+	} else {
+		if(confirm("해당 매체를 복구하겠습니까?"))
+		{
+			location.href="member_del.php?uid="+uid+"<?=$add_url?><?=$add_url2?>";
+		} 
+	}
+}
+</script>
+<!-- start content-outer ........................................................................................................................START -->
+<div id="content-outer">
+<!-- start content -->
+<div id="content">
+
+	<!--  start page-heading -->
+	<div id="page-heading">
+		<h1>문의관리 > <b>문의목록</b></h1>
+	</div>
+	<!-- end page-heading -->
+
+	<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+	<tr>
+		<th rowspan="3" class="sized"><img src="images/shared/side_shadowleft.jpg" width="20" height="300" alt="" /></th>
+		<th class="topleft"></th>
+		<td id="tbl-border-top">&nbsp;</td>
+		<th class="topright"></th>
+		<th rowspan="3" class="sized"><img src="images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+	</tr>
+<form name="frm_main">
+	<tr>
+		<td id="tbl-border-left"></td>
+		<td>
+		<!--  start content-table-inner ...................................................................... START -->
+		<div id="content-table-inner">
+		
+			<!--  start table-content  -->
+			<div id="table-content">
+
+<!--
+				<div id="message-yellow">
+				<table border="0" width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="yellow-left">You have a new message. <a href="">Go to Inbox.</a></td>
+					<td class="yellow-right"><a class="close-yellow"><img src="images/table/icon_close_yellow.gif"   alt="" /></a></td>
+				</tr>
+				</table>
+				</div>
+
+				<div id="message-red">
+				<table border="0" width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="red-left">Error. <a href="">Please try again.</a></td>
+					<td class="red-right"><a class="close-red"><img src="images/table/icon_close_red.gif"   alt="" /></a></td>
+				</tr>
+				</table>
+				</div>
+				
+				<div id="message-blue">
+				<table border="0" width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="blue-left">Welcome back. <a href="">View my account.</a> </td>
+					<td class="blue-right"><a class="close-blue"><img src="images/table/icon_close_blue.gif"   alt="" /></a></td>
+				</tr>
+				</table>
+				</div>
+			
+				<div id="message-green">
+				<table border="0" width="100%" cellpadding="0" cellspacing="0">
+				<tr>
+					<td class="green-left">Product added sucessfully. <a href="">Add new one.</a></td>
+					<td class="green-right"><a class="close-green"><img src="images/table/icon_close_green.gif"   alt="" /></a></td>
+				</tr>
+				</table>
+				</div>
+-->		
+
+				<div>
+					<table border="0" width="100%" cellpadding="0" cellspacing="0">
+						<tr>
+							<td>
+								<select name="where1" class="selectType" onChange="javascript:document.frm_main.submit()">
+                  <option value="">==광고사==</option>			             
+<?
+$tmp_mem1 = "select * from tbl_member where member_group='9' and member_stat='Y' order by pk_id asc";
+$que_mem1 = mysql_query($tmp_mem1) or die($tmp_mem1);
+while($row_mem1 = mysql_fetch_array($que_mem1))
+{
+?>
+                  <option value="<?=$row_mem1[member_id]?>" <? if($where1==$row_mem1[member_id]) echo "selected style='color:red'"; ?>><?=stripslashes($row_mem1[member_name])?></option>			             
+<?
+}
+?>
+								</select>
+								<select name="where2" class="selectType" onChange="javascript:document.frm_main.submit()">
+                  <option value="">==매체사==</option>			             
+<?
+$tmp_mem2 = "select * from tbl_member where member_stat='Y' and member_group='10' order by pk_id asc";
+$que_mem2 = mysql_query($tmp_mem2) or die($tmp_mem2);
+while($row_mem2 = mysql_fetch_array($que_mem2))
+{
+?>
+                  <option value="<?=$row_mem2[member_id]?>" <? if($where2==$row_mem2[member_id]) echo "selected style='color:red'"; ?>><?=stripslashes($row_mem2[member_name])?></option>			             
+<?
+}
+?>
+								</select>
+								<select name="where3" class="selectType" onChange="javascript:document.frm_main.submit()">
+                  <option value="">==광고명==</option>			             
+<?
+$tmp_mem3 = "select * from tbl_add where add_yn='Y' order by pk_id asc";
+$que_mem3 = mysql_query($tmp_mem3) or die($tmp_mem3);
+while($row_mem3 = mysql_fetch_array($que_mem3))
+{
+?>
+                  <option value="<?=$row_mem3[pk_id]?>" <? if($where3==$row_mem3[pk_id]) echo "selected style='color:red'"; ?>><?=stripslashes($row_mem3[add_name])?></option>			             
+<?
+}
+?>
+								</select>
+								<select name="where" class="selectType">
+                  <option value="name" <?=$a_s_where[name]?>>회원명</option>			            
+                  <option value="user_id" <?=$a_s_where[user_id]?>>아이디</option>               
+                  <option value="homepage" <?=$a_s_where[homepage]?>>연락처</option>              
+                  <option value="email" <?=$a_s_where[email]?>>이메일</option>              
+								</select>
+								<input type="text" class="inputType" name="keyword" value="<?=$keyword?>" onKeyDown="javascript: if (event.keyCode ==13) {enterbt();}" />
+<a class="large blue button" href="#" onClick="javascript:document.frm_main.submit()">
+  	<span>검색하기</span>
+</a>
+<a class="large green button" href="<?=$PHP_SELF?>" onClick="javascript:document.frm_main.submit()">
+  	<span>검색해제</span>
+</a>
+							</td>
+						</tr>
+					</table>
+				</div><br />
+
+				<!--  start product-table ..................................................................................... -->
+				<table border="0" width="100%" cellpadding="0" cellspacing="0" id="product-table">
+				<tr>
+<!--					<th class="table-header-check"><a id="toggle-all" ></a> </th>-->
+					<th class="table-header-repeat line-left"><a href="?sort=pk_id&order=<?=$order2?>">번호 <span style="font-size:8px"><?=$order3?></th>
+					<th class="table-header-repeat line-left"><a href="#">광고사</a></th>
+					<th class="table-header-repeat line-left"><a href="#">매체사</a></th>
+					<th class="table-header-repeat line-left"><a href="#">광고명</a></th>
+					<th class="table-header-repeat line-left"><a href="#">포인트</a></th>
+					<th class="table-header-repeat line-left"><a href="#">아이디</a></th>
+					<th class="table-header-repeat line-left"><a href="#">회원명</a></th>
+					<th class="table-header-repeat line-left"><a href="#">이메일</a></th>
+					<th class="table-header-repeat line-left"><a href="#">연락처</a></th>
+					<th class="table-header-repeat line-left"><a href="?sort=reg_date&order=<?=$order2?>">클릭일 <span style="font-size:8px"><?=$order3?></a></th>
+					<th class="table-header-repeat line-left"><a href="#">상태</a></th>
+					<th class="table-header-repeat line-left"><a href="#">관리</a></th>
+				</tr>
+<?
+while($rows = mysql_fetch_array($result))
+{
+	if($list_count%2 != 0) $tr_class="alternate-row"; else $tr_class="";
+
+	$tmp1 = "select * from tbl_member where member_id='$rows[category]'";
+	$que1 = mysql_query($tmp1) or die($tmp1);
+	if($que1) $row1 = mysql_fetch_array($que1); else $row1 = NULL;
+
+	$tmp2 = "select * from tbl_member where member_id='$rows[opt]'";
+	$que2 = mysql_query($tmp2) or die($tmp2);
+	if($que2) $row2 = mysql_fetch_array($que2); else $row2 = NULL;
+
+	$tmp3 = "select * from tbl_add where pk_id='$rows[bpid]'";
+	$que3 = mysql_query($tmp3) or die($tmp3);
+	if($que3) $row3 = mysql_fetch_array($que3); else $row3 = NULL;
+
+	if($rows[reserve_yn] == "Y") $yn = "<font color=blue>처리완료</font>"; else $yn = "<font color=red>처리대기</font>";
+?>
+				<tr class="<?=$tr_class?>">
+<!--					<td><input type="checkbox"/></td>-->
+					<td><?=$strike?><?=$list_count--?></td>
+					<td><?=$strike?><?=$row1[member_name]?></td>
+					<td><?=$strike?><?=$row2[member_name]?></td>
+					<td><?=$strike?><?=stripslashes($row3[add_name])?></td>
+					<td><?=$strike?><?=number_format($row3[add_price])?></td>
+					<td><?=$strike?><?=stripslashes($rows[user_id])?></td>
+					<td><?=$strike?><?=stripslashes($rows[name])?></td>
+					<td><?=$strike?><?=stripslashes($rows[email])?></td>
+					<td><?=$strike?><?=stripslashes($rows[homepage])?></td>
+					<td><?=$strike?><?=stripslashes($rows[reg_date])?></td>
+					<td><?=$strike?><?=$yn?></td>
+					<td>
+						<a href="board_edit.html?pid=<?=$rows[pk_id]?><?=$add_url?><?=$add_url2?>" title="보기/처리" class="icon-1 info-tooltip"></a>
+					</td>
+				</tr>
+<?
+}
+?>
+				</tr>
+				</table>
+				<!--  end product-table................................... --> 
+			</div>
+			<!--  end content-table  -->
+		
+			<!--  start actions-box
+			<div id="actions-box">
+				<a href="" clnurass="action-slider"></a>
+				<div id="actions-box-slider">
+					<a href="" class="action-edit">Edit</a>
+					<a href="" class="action-delete">Delete</a>
+				</div>
+				<div class="clear"></div>
+			</div>
+			end actions-box........... -->
+			
+			<!--  start paging..................................................... -->
+			<table border="0" cellpadding="0" cellspacing="0" id="paging-table">
+			<tr>
+			<td>
+<?php				
+$prev_img = "<img src='images/table/paging_left.gif' border=0 align='absmiddle'>";
+$next_img = "<img src='images/table/paging_right.gif' border=0 align='absmiddle'>";
+		
+//==============================
+// 페이지 정보가 표시되는 곳입니다.
+//------------------------------
+if($row_count>=0)
+{
+	// ----------------------
+  if($start_page>1)
+ 	{
+  	echo "&nbsp;<a href=?uid=$uid&np=".($start_page-1)."&sp=".($start_page-$div_page).$add_url.">$prev_img</a>";  						
+	}
+	else
+	{
+		echo "&nbsp;$prev_img";
+	}	//	이전 페이지 등록정보 끝
+  //---------------------------
+
+	if($last_page==0)
+	{
+		echo "&nbsp;<span style='color:red;font-size:14px;'>1</span></b>";
+	}
+	else
+	{
+		for($i=$start_page;$i<=$last_page;$i++)
+		{
+			if($now_page==$i)
+			{
+				echo "&nbsp;&nbsp;<span style='color:red;font-size:14px;'>".$i."</span></b>";
+			}
+			else
+			{
+				echo "&nbsp;&nbsp;<a href=?uid=$uid&np=".$i."&sp=".$start_page.$add_url." style='color:black;font-size:14px;'>".$i."</a>";
+			}	//	end of if
+		}	//	end of for
+	}
+
+	//---------------------------
+	if($total_page>$last_page)
+	{
+		echo "&nbsp;&nbsp;<a href=?uid=$uid&np=".($last_page+1)."&sp=".($last_page+1).$add_url.">$next_img</a>";
+	}
+	else
+	{
+		echo "&nbsp;&nbsp;$next_img";
+	}	//	다음 페이지 등록정보 끝
+	// ----------------------
+}	// end of if
+//==============================
+?>
+<!--				<a href="" class="page-far-left"></a>
+				<a href="" class="page-left"></a>
+				<div id="page-info">
+				Page <strong>1</strong> / 15
+				</div>
+				<a href="" class="page-right"></a>
+				<a href="" class="page-far-right"></a>-->
+			</td>
+			<td style="padding-left:10px">
+				<select name="div_list" onChange="javascript:document.frm_main.submit()" class="selectType">
+					<option value="10" <? if($div_list == "10") echo "selected"; ?>>10줄 표시</option>
+					<option value="20" <? if($div_list == "20") echo "selected"; ?>>20줄 표시</option>
+					<option value="50" <? if($div_list == "50") echo "selected"; ?>>50줄 표시</option>
+					<option value="100" <? if($div_list == "100") echo "selected"; ?>>100줄 표시</option>
+				</select>
+			</td>
+			</tr>
+</form>
+			</table>
+			<!--  end paging................ -->
+			
+			<div class="clear"></div>
+		 
+		</div>
+		<!--  end content-table-inner ............................................END  -->
+		</td>
+		<td id="tbl-border-right"></td>
+	</tr>
+	<tr>
+		<th class="sized bottomleft"></th>
+		<td id="tbl-border-bottom">&nbsp;</td>
+		<th class="sized bottomright"></th>
+	</tr>
+	</table>
+	<div class="clear">&nbsp;</div>
+
+</div>
+<!--  end content -->
+<div class="clear">&nbsp;</div>
+</div>
+<!--  end content-outer........................................................END -->
+<? include "footer.html"; ?>

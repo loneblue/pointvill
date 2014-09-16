@@ -1,0 +1,431 @@
+<? 
+include "header.html"; 
+
+if($np)	$add_url.= "&np=$np";
+if($sp)	$add_url.= "&sp=$sp";
+if($where)	$add_url.= "&where=$where";
+if($where1)	$add_url.= "&where1=$where1";
+if($keyword)	$add_url.= "&keyword=$keyword";
+if($sort)	$add_url.= "&sort=$sort";
+if($order)	$add_url.= "&order=$order";
+if($div_list)	$add_url.= "&div_list=$div_list";
+
+$tmp = "select * from tbl_member where member_id='$uid'";
+$que = mysql_query($tmp) or die($tmp);
+if($que) $rows = mysql_fetch_array($que);
+?>
+<script>
+<!--
+function check_value_member(fm)
+{
+	if(fm.member_name.value.replace(/ /g, "") =="")
+	{	
+		alert("매체명을 입력하셔야 합니다.");	
+		fm.member_name.focus();	
+		return false;	
+	}
+	if(fm.member_pw.value.replace(/ /g, "") =="")
+	{	
+		alert("비밀번호를 입력하셔야 합니다.");	
+		fm.member_pw.focus();	
+		return false;	
+	}
+	fm.submit();
+}	
+//-->
+</script>
+<!-- start content-outer -->
+<div id="content-outer">
+<!-- start content -->
+<div id="content">
+
+
+<div id="page-heading"><h1>매체관리 > <b>매체수정</b></h1></div>
+
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+<tr>
+	<th rowspan="3" class="sized"><img src="images/shared/side_shadowleft.jpg" width="20" height="300" alt="" /></th>
+	<th class="topleft"></th>
+	<td id="tbl-border-top">&nbsp;</td>
+	<th class="topright"></th>
+	<th rowspan="3" class="sized"><img src="images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+</tr>
+<tr>
+	<td id="tbl-border-left"></td>
+	<td>
+	<!--  start content-table-inner -->
+	<div id="content-table-inner">
+	
+	<table border="0" width="100%" cellpadding="0" cellspacing="0">
+<form name="frm_member" method="post" action="member_edit.php" encType="multipart/form-data">
+<input type="hidden" name="uid" value="<?=$uid?>">
+<input type="hidden" name="np" value="<?=$np?>">
+<input type="hidden" name="sp" value="<?=$sp?>">
+<input type="hidden" name="where" value="<?=$where?>">
+<input type="hidden" name="where1" value="<?=$where1?>">
+<input type="hidden" name="keyword" value="<?=$keyword?>">
+<input type="hidden" name="sort" value="<?=$sort?>">
+<input type="hidden" name="order" value="<?=$order?>">
+<input type="hidden" name="div_list" value="<?=$div_list?>">
+	<tr valign="top">
+	<td>
+	
+	
+		<!--  start step-holder -->
+		<div id="step-holder">
+			<div class="step-no">1</div>
+			<div class="step-dark-left"><a href="">내용입력</a></div>
+			<div class="step-dark-right">&nbsp;</div>
+			<div class="step-no-off">2</div>
+			<div class="step-light-left">입력완료</div>
+<!--
+			<div class="step-light-right">&nbsp;</div>
+			<div class="step-no-off">3</div>
+			<div class="step-light-left">Preview</div>
+-->
+			<div class="step-light-round">&nbsp;</div>
+			<div class="clear"></div>
+		</div>
+		<!--  end step-holder -->
+	
+		<!-- start id-form -->
+		<table border="0" cellpadding="0" cellspacing="0"  id="id-form">
+<!--
+		<tr>
+			<th valign="top">Product name:</th>
+			<td><input type="text" class="inp-form" /></td>
+			<td></td>
+		</tr>
+-->
+		<tr>
+			<th valign="top">분류</th>
+			<td>
+		<select name="member_group" class="styledselect_form_1">
+					<option value="10" <? if($rows[member_group]=="10") echo "selected"; ?>>매체사</option>
+					<option value="9" <? if($rows[member_group]=="9") echo "selected"; ?>>광고사</option>
+		</select>
+			</td>
+		</tr>
+		<tr>
+			<th valign="top">매체명</th>
+			<td><input type="text" class="inp-form-error" name="member_name" value="<?=stripslashes($rows[member_name])?>" /></td>
+			<td>
+			<div class="error-left"></div>
+			<div class="error-inner">필수입력</div>
+			</td>
+		</tr>
+		<tr>
+			<th valign="top">아이디</th>
+			<td><input type="text" class="inp-form-error" name="member_id" value="<?=stripslashes($rows[member_id])?>" disabled /></td>
+			<td>
+			<div class="error-left"></div>
+			<div class="error-inner">필수입력</div>
+			</td>
+		</tr>
+		<tr>
+			<th valign="top">비밀번호</th>
+			<td><input type="text" class="inp-form-error" name="member_pw" value="<?=stripslashes($rows[member_pw])?>" /></td>
+			<td>
+			<div class="error-left"></div>
+			<div class="error-inner">필수입력</div>
+			</td>
+		</tr>
+<!--
+		<tr>
+		<th valign="top">담당자</th>
+		<td>	
+		<select  class="styledselect_form_1">
+			<option value="">All</option>
+			<option value="">Products</option>
+			<option value="">Categories</option>
+			<option value="">Clients</option>
+			<option value="">News</option>
+		</select>
+		</td>
+		<td></td>
+		</tr>
+		<tr>
+		<th valign="top">Sub Category:</th>
+		<td>	
+		<select  class="styledselect_form_1">
+			<option value="">All</option>
+			<option value="">Products</option>
+			<option value="">Categories</option>
+			<option value="">Clients</option>
+			<option value="">News</option>
+		</select>
+		</td>
+		<td></td>
+		</tr> 
+-->
+		<tr>
+			<th valign="top">담당자</th>
+			<td><input type="text" class="inp-form" name="member_attn" value="<?=stripslashes($rows[member_attn])?>" /></td>
+			<td></td>
+		</tr>
+		<tr>
+			<th valign="top">이메일</th>
+			<td><input type="text" class="inp-form" name="member_email" value="<?=stripslashes($rows[member_email])?>" /></td>
+			<td></td>
+		</tr>
+		<tr>
+			<th valign="top">연락처</th>
+			<td><input type="text" class="inp-form" name="member_tel" value="<?=stripslashes($rows[member_tel])?>" /></td>
+			<td></td>
+		</tr>
+		<tr>
+			<th valign="top">계약일</th>
+			<td><input type="text" class="inp-form" name="member_con_date" value="<?=stripslashes($rows[member_con_date])?>" /></td>
+			<td></td>
+		</tr>
+		<tr>
+			<th valign="top">리워드 URL</th>
+			<td><input type="text" class="inp-form_1" style="width:400px" name="member_reward_url" value="<?=stripslashes($rows[member_reward_url])?>" /></td>
+			<td></td>
+		</tr>
+		<tr>
+			<th valign="top">참고 URL</th>
+			<td><input type="text" class="inp-form_1" style="width:400px" name="member_bigo_url" value="<?=stripslashes($rows[member_bigo_url])?>" /></td>
+			<td></td>
+		</tr>
+<!--
+		<tr>
+		<th valign="top">계약일</th>
+		<td class="noheight">
+		
+			<table border="0" cellpadding="0" cellspacing="0">
+			<tr  valign="top">
+				<td>
+				<form id="chooseDateForm" action="#">
+				
+				<select id="d" class="styledselect-day">
+					<option value="">dd</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+					<option value="13">13</option>
+					<option value="14">14</option>
+					<option value="15">15</option>
+					<option value="16">16</option>
+					<option value="17">17</option>
+					<option value="18">18</option>
+					<option value="19">19</option>
+					<option value="20">20</option>
+					<option value="21">21</option>
+					<option value="22">22</option>
+					<option value="23">23</option>
+					<option value="24">24</option>
+					<option value="25">25</option>
+					<option value="26">26</option>
+					<option value="27">27</option>
+					<option value="28">28</option>
+					<option value="29">29</option>
+					<option value="30">30</option>
+					<option value="31">31</option>
+				</select>
+				</td>
+				<td>
+					<select id="m" class="styledselect-month">
+						<option value="">mmm</option>
+						<option value="1">Jan</option>
+						<option value="2">Feb</option>
+						<option value="3">Mar</option>
+						<option value="4">Apr</option>
+						<option value="5">May</option>
+						<option value="6">Jun</option>
+						<option value="7">Jul</option>
+						<option value="8">Aug</option>
+						<option value="9">Sep</option>
+						<option value="10">Oct</option>
+						<option value="11">Nov</option>
+						<option value="12">Dec</option>
+					</select>
+				</td>
+				<td>
+					<select  id="y"  class="styledselect-year">
+						<option value="">yyyy</option>
+						<option value="2005">2005</option>
+						<option value="2006">2006</option>
+						<option value="2007">2007</option>
+						<option value="2008">2008</option>
+						<option value="2009">2009</option>
+						<option value="2010">2010</option>
+					</select>
+					</form>
+				</td>
+				<td><a href=""  id="date-pick"><img src="images/forms/icon_calendar.jpg"   alt="" /></a></td>
+			</tr>
+			</table>
+		
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<th valign="top">Description:</th>
+		<td><textarea rows="" cols="" class="form-textarea"></textarea></td>
+		<td></td>
+	</tr>
+	<tr>
+	<th>Image 1:</th>
+	<td><input type="file" class="file_1" /></td>
+	<td>
+	<div class="bubble-left"></div>
+	<div class="bubble-inner">JPEG, GIF 5MB max per image</div>
+	<div class="bubble-right"></div>
+	</td>
+	</tr>
+	<tr>
+	<th>Image 2:</th>
+	<td>  <input type="file" class="file_1" /></td>
+	<td><div class="bubble-left"></div>
+	<div class="bubble-inner">JPEG, GIF 5MB max per image</div>
+	<div class="bubble-right"></div></td>
+	</tr>
+	<tr>
+	<th>Image 3:</th>
+	<td><input type="file" class="file_1" /></td>
+	<td><div class="bubble-left"></div>
+	<div class="bubble-inner">JPEG, GIF 5MB max per image</div>
+	<div class="bubble-right"></div></td>
+	</tr>
+-->
+	<tr>
+		<th>&nbsp;</th>
+		<td valign="top">
+<!--
+			<input type="button" class="form-submit" onClick="javascript:check_value_member(frm_member)" />
+			<input type="reset" class="form-reset" onClick="javascript:location.href='osp_list.html'"  />
+-->
+<a class="large red button" href="#" onClick="javascript:check_value_member(frm_member)">
+  	<span>수정하기</span>
+</a>&nbsp;
+<? if($USER_INFO[member_group] == "0") { ?>
+<a class="large blue button" href="member_list.html?mode=list<?=$add_url?>">
+  	<span>목록으로</span>
+</a>
+<? } ?>
+		</td>
+		<td></td>
+	</tr>
+</form>
+	</table>
+	<!-- end id-form  -->
+
+	</td>
+	<td>
+
+	<!--  start related-activities
+	<div id="related-activities">
+		
+		<div id="related-act-top">
+			<img src="images/forms/header_related_act.gif" width="271" height="43" alt="" />
+		</div>
+
+		<div id="related-act-bottom">
+
+			<div id="related-act-inner">
+			
+				<div class="left"><a href=""><img src="images/forms/icon_plus.gif" width="21" height="21" alt="" /></a></div>
+				<div class="right">
+					<h5>Add another product</h5>
+					Lorem ipsum dolor sit amet consectetur
+					adipisicing elitsed do eiusmod tempor.
+					<ul class="greyarrow">
+						<li><a href="">Click here to visit</a></li> 
+						<li><a href="">Click here to visit</a> </li>
+					</ul>
+				</div>
+				
+				<div class="clear"></div>
+				<div class="lines-dotted-short"></div>
+				
+				<div class="left"><a href=""><img src="images/forms/icon_minus.gif" width="21" height="21" alt="" /></a></div>
+				<div class="right">
+					<h5>Delete products</h5>
+					Lorem ipsum dolor sit amet consectetur
+					adipisicing elitsed do eiusmod tempor.
+					<ul class="greyarrow">
+						<li><a href="">Click here to visit</a></li> 
+						<li><a href="">Click here to visit</a> </li>
+					</ul>
+				</div>
+				
+				<div class="clear"></div>
+				<div class="lines-dotted-short"></div>
+				
+				<div class="left"><a href=""><img src="images/forms/icon_edit.gif" width="21" height="21" alt="" /></a></div>
+				<div class="right">
+					<h5>Edit categories</h5>
+					Lorem ipsum dolor sit amet consectetur
+					adipisicing elitsed do eiusmod tempor.
+					<ul class="greyarrow">
+						<li><a href="">Click here to visit</a></li> 
+						<li><a href="">Click here to visit</a> </li>
+					</ul>
+				</div>
+				<div class="clear"></div>
+				
+			</div>
+
+			<div class="clear"></div>
+		
+		</div>
+	
+	</div>
+	end related-activities -->
+
+</td>
+</tr>
+<tr>
+<td><img src="images/shared/blank.gif" width="695" height="1" alt="blank" /></td>
+<td></td>
+</tr>
+</table>
+ 
+<div class="clear"></div>
+ 
+
+</div>
+<!--  end content-table-inner  -->
+</td>
+<td id="tbl-border-right"></td>
+</tr>
+<tr>
+	<th class="sized bottomleft"></th>
+	<td id="tbl-border-bottom">&nbsp;</td>
+	<th class="sized bottomright"></th>
+</tr>
+</table>
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class="clear">&nbsp;</div>
+
+</div>
+<!--  end content -->
+<div class="clear">&nbsp;</div>
+</div>
+<!--  end content-outer -->
+<? include "footer.html"; ?>
